@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  nba-predictor:
+    build: .
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./data/cache:/home/appuser/app/data/cache
+      - ./nba_predictor.db:/home/appuser/app/nba_predictor.db
+    environment:
+      - NBA_DATABASE_URL=sqlite:///nba_predictor.db
+      - SECRET_KEY=${SECRET_KEY:-nba-predictor-default-key-change-in-production}
+      - SPORTSDATA_API_KEY=${SPORTSDATA_API_KEY:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add a Redis container for caching if needed
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  redis_data:

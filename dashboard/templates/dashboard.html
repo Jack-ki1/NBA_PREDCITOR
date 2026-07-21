@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>🏀 NBA Predictor</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
+</head>
+<body>
+<header>
+  <h1>🏀 NBA Predictor</h1>
+  <nav>
+    <button class="tab active" data-tab="predict">Game Predictor</button>
+    <button class="tab" data-tab="standings">Standings Sim</button>
+    <button class="tab" data-tab="title">Title Odds</button>
+    <button class="tab" data-tab="teams">Team Ratings</button>
+  </nav>
+</header>
+ 
+<main>
+  <!-- Game Predictor -->
+  <section id="predict" class="panel active">
+    <div class="controls">
+      <label>Away <select id="away"></select></label>
+      <span class="at">@</span>
+      <label>Home <select id="home"></select></label>
+      <label>Sims <input id="sims" type="number" value="10000" min="100" step="1000"/></label>
+      <label>Spread (home) <input id="spread" type="number" step="0.5" placeholder="-6.5"/></label>
+      <label>Total (O/U) <input id="total" type="number" step="0.5" placeholder="228"/></label>
+      <label class="chk"><input id="neutral" type="checkbox"/> Neutral</label>
+      <button id="runPredict" class="primary">Predict</button>
+    </div>
+    <div id="predictResult" class="result"></div>
+    <div class="grid">
+      <div class="card"><div id="winChart" style="height:320px;"></div></div>
+      <div class="card"><div id="marginChart" style="height:320px;"></div></div>
+    </div>
+  </section>
+ 
+  <!-- Standings -->
+  <section id="standings" class="panel">
+    <div class="controls">
+      <label>Sims <input id="standSims" type="number" value="2000" min="100" step="500"/></label>
+      <button id="runStandings" class="primary">Simulate Season</button>
+    </div>
+    <div id="standChart" style="height:520px;"></div>
+    <div id="standTable"></div>
+  </section>
+ 
+  <!-- Title odds -->
+  <section id="title" class="panel">
+    <div class="controls">
+      <label>Sims <input id="titleSims" type="number" value="2000" min="100" step="500"/></label>
+      <button id="runTitle" class="primary">Simulate Playoffs</button>
+    </div>
+    <div id="titleChart" style="height:520px;"></div>
+  </section>
+ 
+  <!-- Teams -->
+  <section id="teams" class="panel">
+    <div id="teamsTable"></div>
+  </section>
+</main>
+ 
+<footer>NBA Predictor · Elo + Monte Carlo · analogous to the F1 Predictor engine</footer>
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>
