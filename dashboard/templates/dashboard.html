@@ -3,13 +3,31 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>🏀 NBA Predictor</title>
+<title>NBA Predictor — Elo + Monte Carlo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"/>
 </head>
 <body>
 <header>
-  <h1>🏀 NBA Predictor</h1>
+  <div class="brand">
+    <span class="logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill="#fff"/>
+        <g stroke="#0b1120" stroke-width="1.4">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2v20"/>
+          <path d="M4.5 4.5C8 8 8 16 4.5 19.5M19.5 4.5C16 8 16 16 19.5 19.5"/>
+        </g>
+      </svg>
+    </span>
+    <div>
+      <h1>NBA Predictor</h1>
+      <span class="tag">Elo · Monte Carlo</span>
+    </div>
+  </div>
   <nav>
     <button class="tab active" data-tab="predict">Game Predictor</button>
     <button class="tab" data-tab="standings">Standings Sim</button>
@@ -17,53 +35,83 @@
     <button class="tab" data-tab="teams">Team Ratings</button>
   </nav>
 </header>
- 
+
 <main>
   <!-- Game Predictor -->
   <section id="predict" class="panel active">
+    <div class="panel-head">
+      <h2>Game Predictor</h2>
+      <p>Simulate a single matchup for win probability, projected score, spread and total.</p>
+    </div>
     <div class="controls">
-      <label>Away <select id="away"></select></label>
+      <label>Away Team <select id="away"></select></label>
       <span class="at">@</span>
-      <label>Home <select id="home"></select></label>
-      <label>Sims <input id="sims" type="number" value="10000" min="100" step="1000"/></label>
+      <label>Home Team <select id="home"></select></label>
+      <label>Simulations <input id="sims" type="number" value="10000" min="100" step="1000"/></label>
       <label>Spread (home) <input id="spread" type="number" step="0.5" placeholder="-6.5"/></label>
       <label>Total (O/U) <input id="total" type="number" step="0.5" placeholder="228"/></label>
-      <label class="chk"><input id="neutral" type="checkbox"/> Neutral</label>
-      <button id="runPredict" class="primary">Predict</button>
+      <label class="chk"><input id="neutral" type="checkbox"/> Neutral court</label>
+      <button id="runPredict" class="primary">Run Prediction</button>
     </div>
     <div id="predictResult" class="result"></div>
     <div class="grid">
-      <div class="card"><div id="winChart" style="height:320px;"></div></div>
-      <div class="card"><div id="marginChart" style="height:320px;"></div></div>
+      <div class="card">
+        <div class="card-title">Win Probability</div>
+        <div id="winChart" style="height:320px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Home Margin Distribution</div>
+        <div id="marginChart" style="height:320px;"></div>
+      </div>
     </div>
   </section>
- 
+
   <!-- Standings -->
   <section id="standings" class="panel">
+    <div class="panel-head">
+      <h2>Standings Simulation</h2>
+      <p>Monte Carlo projection of remaining-season win totals and playoff odds.</p>
+    </div>
     <div class="controls">
-      <label>Sims <input id="standSims" type="number" value="2000" min="100" step="500"/></label>
+      <label>Simulations <input id="standSims" type="number" value="2000" min="100" step="500"/></label>
       <button id="runStandings" class="primary">Simulate Season</button>
     </div>
-    <div id="standChart" style="height:520px;"></div>
+    <div class="chart-shell">
+      <div class="card-title">Projected Wins &nbsp;·&nbsp; <span style="color:var(--blue)">East</span> / <span style="color:var(--accent)">West</span></div>
+      <div id="standChart" style="height:560px;"></div>
+    </div>
     <div id="standTable"></div>
   </section>
- 
+
   <!-- Title odds -->
   <section id="title" class="panel">
+    <div class="panel-head">
+      <h2>Championship Odds</h2>
+      <p>Full playoff-bracket simulation for Finals and title probabilities.</p>
+    </div>
     <div class="controls">
-      <label>Sims <input id="titleSims" type="number" value="2000" min="100" step="500"/></label>
+      <label>Simulations <input id="titleSims" type="number" value="2000" min="100" step="500"/></label>
       <button id="runTitle" class="primary">Simulate Playoffs</button>
     </div>
-    <div id="titleChart" style="height:520px;"></div>
+    <div class="chart-shell">
+      <div class="card-title">Championship &amp; Finals Odds</div>
+      <div id="titleChart" style="height:560px;"></div>
+    </div>
   </section>
- 
+
   <!-- Teams -->
   <section id="teams" class="panel">
+    <div class="panel-head">
+      <h2>Team Ratings</h2>
+      <p>Live Elo ratings and records, ranked strongest to weakest.</p>
+    </div>
     <div id="teamsTable"></div>
   </section>
 </main>
- 
-<footer>NBA Predictor · Elo + Monte Carlo · analogous to the F1 Predictor engine</footer>
+
+<footer>
+  <b>NBA Predictor</b> · Elo ratings + Monte Carlo simulation · for educational &amp; entertainment use only
+</footer>
 <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
 </body>
 </html>
